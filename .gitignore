@@ -1,0 +1,33 @@
+# Dependencias
+Client/node_modules/
+Server/node_modules/
+
+# Archivos compilados
+Client/dist/
+Server/dist/
+Client/build/
+Server/build/
+
+# Variables de entorno
+Client/.env
+Server/.env
+Client/.env.*
+Server/.env.*
+!Client/.env.example
+!Server/.env.example
+
+# Logs
+*.log
+logs/
+
+# Cobertura
+Client/coverage/
+Server/coverage/
+
+# Configuración de editores
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

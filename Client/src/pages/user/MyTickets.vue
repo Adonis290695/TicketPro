@@ -1,6 +1,6 @@
 <template>
 
-    <Navbar/>
+    <Navbar />
 
     <section class="max-w-7xl mx-auto px-8 py-10">
 
@@ -38,70 +38,102 @@
 
         <div
             v-else
-            class="grid gap-6"
+            class="grid gap-8"
         >
 
             <div
                 v-for="(ticket,index) in tickets"
                 :key="index"
-                class="bg-white rounded-lg shadow-lg p-6"
+                class="bg-white rounded-xl shadow-lg border overflow-hidden"
             >
 
-                <h2 class="text-2xl font-bold mb-4">
+                <div
+                    class="bg-blue-600 text-white px-6 py-4 flex justify-between items-center"
+                >
 
-                    Ticket #{{ index + 1 }}
+                    <h2 class="text-2xl font-bold">
 
-                </h2>
+                        {{ ticket.evento.nombre }}
 
-                <div class="space-y-3">
+                    </h2>
 
-                    <p>
-
-                        <strong>Cantidad:</strong>
-
-                        {{ ticket.cantidad }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Precio Unitario:</strong>
-
-                        S/. {{ ticket.precioUnitario }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Precio Total:</strong>
-
-                        S/. {{ ticket.precioTotal }}
-
-                    </p>
-
-                    <p>
-
-                        <strong>Estado:</strong>
+                    <span
+                        class="bg-green-500 px-4 py-1 rounded-full text-sm font-bold"
+                    >
 
                         {{ ticket.estado }}
 
-                    </p>
+                    </span>
 
-                    <p>
+                </div>
 
-                        <strong>Fecha de Compra:</strong>
+                <div
+                    class="grid md:grid-cols-2 gap-8 p-6"
+                >
 
-                        {{ ticket.fechaCompra }}
+                    <div class="space-y-3">
 
-                    </p>
+                        <p>
 
-                    <p>
+                            <strong>📅 Fecha:</strong>
 
-                        <strong>Evento ID:</strong>
+                            {{ ticket.evento.fecha }}
 
-                        {{ ticket.eventoId }}
+                        </p>
 
-                    </p>
+                        <p>
+
+                            <strong>🕒 Hora:</strong>
+
+                            {{ ticket.evento.hora }}
+
+                        </p>
+
+                        <p>
+
+                            <strong>📍 Lugar:</strong>
+
+                            {{ ticket.evento.ubicacion }}
+
+                        </p>
+
+                    </div>
+
+                    <div class="space-y-3">
+
+                        <p>
+
+                            <strong>🎟 Cantidad:</strong>
+
+                            {{ ticket.cantidad }}
+
+                        </p>
+
+                        <p>
+
+                            <strong>💰 Precio Unitario:</strong>
+
+                            S/. {{ ticket.precioUnitario }}
+
+                        </p>
+
+                        <p>
+
+                            <strong>💵 Total Pagado:</strong>
+
+                            S/. {{ ticket.precioTotal }}
+
+                        </p>
+
+                        <p>
+
+                            <strong>🛒 Fecha Compra:</strong>
+
+                            {{ ticket.fechaCompra }}
+
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -121,9 +153,9 @@ import Navbar from "../../components/layout/Navbar.vue";
 
 import { obtenerMisTickets } from "../../services/ticketService";
 
-import type { Tickets } from "../../interfaces/Tickets";
+import type { TicketDetalle } from "../../interfaces/TicketDetalle";
 
-const tickets = ref<Tickets[]>([]);
+const tickets = ref<TicketDetalle[]>([]);
 
 const cargando = ref(true);
 

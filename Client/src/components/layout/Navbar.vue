@@ -4,6 +4,8 @@
 
     <div class="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
 
+        <!-- LOGO -->
+
         <RouterLink
             to="/"
             class="text-2xl font-bold hover:text-gray-200 transition"
@@ -11,7 +13,11 @@
             TicketPro
         </RouterLink>
 
+
         <div class="flex items-center gap-6 font-medium">
+
+
+            <!-- INICIO -->
 
             <RouterLink
                 v-if="!authStore.isAdmin"
@@ -21,9 +27,17 @@
                 Inicio
             </RouterLink>
 
-            <!-- Usuario -->
 
-            <template v-if="authStore.isAuthenticated && !authStore.isAdmin">
+            <!-- ========================= -->
+            <!-- USUARIO -->
+            <!-- ========================= -->
+
+            <template
+                v-if="
+                    authStore.isAuthenticated &&
+                    !authStore.isAdmin
+                "
+            >
 
                 <RouterLink
                     to="/user/tickets"
@@ -34,9 +48,14 @@
 
             </template>
 
-            <!-- Administrador -->
+
+            <!-- ========================= -->
+            <!-- ADMINISTRADOR -->
+            <!-- ========================= -->
 
             <template v-if="authStore.isAdmin">
+
+                <!-- Dashboard -->
 
                 <RouterLink
                     to="/admin/dashboard"
@@ -45,12 +64,36 @@
                     Dashboard
                 </RouterLink>
 
+
+                <!-- Estadísticas -->
+
+                <RouterLink
+                    to="/admin/statistics"
+                    class="hover:text-gray-200 transition"
+                >
+                    Estadísticas
+                </RouterLink>
+
+                <!--Users-->
+
+                <RouterLink
+                    to="/admin/users"
+                    class="hover:text-gray-200 transition"
+                >
+                    Usuarios
+                </RouterLink>
+
+                <!-- Administrar eventos -->
+
                 <RouterLink
                     to="/admin/events"
                     class="hover:text-gray-200 transition"
                 >
                     Administrar Eventos
                 </RouterLink>
+
+
+                <!-- Crear evento -->
 
                 <RouterLink
                     to="/admin/create-event"
@@ -61,7 +104,10 @@
 
             </template>
 
-            <!-- Invitado -->
+
+            <!-- ========================= -->
+            <!-- INVITADO -->
+            <!-- ========================= -->
 
             <template v-if="!authStore.isAuthenticated">
 
@@ -72,6 +118,7 @@
                     Login
                 </RouterLink>
 
+
                 <RouterLink
                     to="/register"
                     class="hover:text-gray-200 transition"
@@ -81,7 +128,10 @@
 
             </template>
 
-            <!-- Usuario logueado -->
+
+            <!-- ========================= -->
+            <!-- USUARIO AUTENTICADO -->
+            <!-- ========================= -->
 
             <template v-else>
 
@@ -91,9 +141,10 @@
 
                 </span>
 
+
                 <button
                     @click="cerrarSesion"
-                    class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition"
+                    class="bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded transition"
                 >
                     Cerrar sesión
                 </button>
@@ -108,15 +159,42 @@
 
 </template>
 
+
 <script setup lang="ts">
 
-import { RouterLink, useRouter } from "vue-router";
+import {
+    RouterLink,
+    useRouter
+} from "vue-router";
 
-import { useAuthStore } from "../../stores/authStores";
+import {
+    useAuthStore
+} from "../../stores/authStores";
+
+
+/*
+|--------------------------------------------------------------------------
+| ROUTER
+|--------------------------------------------------------------------------
+*/
 
 const router = useRouter();
 
+
+/*
+|--------------------------------------------------------------------------
+| STORE DE AUTENTICACIÓN
+|--------------------------------------------------------------------------
+*/
+
 const authStore = useAuthStore();
+
+
+/*
+|--------------------------------------------------------------------------
+| CERRAR SESIÓN
+|--------------------------------------------------------------------------
+*/
 
 function cerrarSesion() {
 

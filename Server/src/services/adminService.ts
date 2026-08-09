@@ -1,186 +1,412 @@
-import { contarUsuario } from "../repositories/authRepository";
-import { contarEventos } from "../repositories/eventRepository";
-import { contarTicketsVendidos } from "../repositories/ticketsRepository";
-import { obtenerIngresosTotales } from "../repositories/ticketsRepository";
-import { obtenerUsuarioMasComprador } from "../repositories/ticketsRepository";
-import { buscarUsuarioPorId } from "../repositories/authRepository";
-import { obtenerEventoMasVendido } from "../repositories/ticketsRepository";
-import { obtenerEventosPorId } from "../repositories/eventRepository";
-import { obtenerEventosPorMes } from "../repositories/eventRepository";
-import { obtenerIngresosPorMes } from "../repositories/ticketsRepository";
-import { obtenerTopEventos } from "../repositories/ticketsRepository";
-import { obtenerUltimasCompras } from "../repositories/ticketsRepository";
-import { obtenerProximosEventos } from "../repositories/eventRepository";
+import { contarUsuario, buscarUsuarioPorId } from "../repositories/authRepository";
+
+import {
+    contarEventos,
+    obtenerEventosPorId,
+    obtenerEventosPorMes,
+    obtenerProximosEventos
+} from "../repositories/eventRepository";
+
+import {
+    contarTicketsVendidos,
+    obtenerIngresosTotales,
+    obtenerUsuarioMasComprador,
+    obtenerEventoMasVendido,
+    obtenerIngresosPorMes,
+    obtenerTopEventos,
+    obtenerUltimasCompras
+} from "../repositories/ticketsRepository";
+
 
 export async function obtenerDashboardAdmin() {
 
-    const totalUsuarios = await contarUsuario();
-    const totalEventos = await contarEventos();
-    const totalTickets = await contarTicketsVendidos();
-    const totalIngresos = await obtenerIngresosTotales();
+    const [
 
-    const comprador = await obtenerUsuarioMasComprador();
+        totalUsuarios,
+
+        totalEventos,
+
+        totalTickets,
+
+        totalIngresos,
+
+        comprador,
+
+        eventoMasVendido,
+
+        eventosMes,
+
+        ingresosMes,
+
+        top,
+
+        compras,
+
+        proximosEventos
+
+    ] = await Promise.all([
+
+        contarUsuario(),
+
+        contarEventos(),
+
+        contarTicketsVendidos(),
+
+        obtenerIngresosTotales(),
+
+        obtenerUsuarioMasComprador(),
+
+        obtenerEventoMasVendido(),
+
+        obtenerEventosPorMes(),
+
+        obtenerIngresosPorMes(),
+
+        obtenerTopEventos(),
+
+        obtenerUltimasCompras(),
+
+        obtenerProximosEventos()
+
+    ]);
+
+
+    /*
+     * ============================================================
+     * MEJOR CLIENTE
+     * ============================================================
+     */
 
     let mejorCliente = null;
 
-    if(comprador){
 
-      const usuario = await buscarUsuarioPorId(comprador._id);
+    if (comprador) {
 
-       if(usuario){
+        const usuario = await buscarUsuarioPorId(comprador._id);
 
-        mejorCliente = {
 
-            nombre: usuario.nombre,
+        if (usuario) {
 
-            email: usuario.email,
+            mejorCliente = {
 
-            ticketsComprados: comprador.ticketsComprados
+                nombre: usuario.nombre,
 
-        };
+                email: usuario.email,
 
-      }
+                ticketsComprados: comprador.ticketsComprados
+
+            };
+
+        }
 
     }
 
-    const eventoMasVendido = await obtenerEventoMasVendido();
+
+    /*
+     * ============================================================
+     * EVENTO MÁS VENDIDO
+     * ============================================================
+     */
 
     let mejorEvento = null;
 
-    if(eventoMasVendido){
 
-     const evento = await obtenerEventosPorId(eventoMasVendido._id);
+    if (eventoMasVendido) {
 
-        if(evento){
+        const evento = await obtenerEventosPorId(
+            eventoMasVendido._id
+        );
 
-         mejorEvento = {
-            nombre: evento.nombre,
-            ticketsVendidos: eventoMasVendido.ticketsVendidos,
-            ingresos: eventoMasVendido.ingresos
-         };
+
+        if (evento) {
+
+            mejorEvento = {
+
+                nombre: evento.nombre,
+
+                ticketsVendidos:
+                    eventoMasVendido.ticketsVendidos,
+
+                ingresos:
+                    eventoMasVendido.ingresos
+
+            };
 
         }
 
     }
 
-    const eventosMes = await obtenerEventosPorMes();
+
+    /*
+     * ============================================================
+     * NOMBRES DE LOS MESES
+     * ============================================================
+     */
 
     const meses: Record<string, string> = {
-            "01": "Enero",
-            "02": "Febrero",
-            "03": "Marzo",
-            "04": "Abril",
-            "05": "Mayo",
-            "06": "Junio",
-            "07": "Julio",
-            "08": "Agosto",
-            "09": "Septiembre",
-            "10": "Octubre",
-            "11": "Noviembre",
-            "12": "Diciembre"
+
+        "01": "Enero",
+        "02": "Febrero",
+        "03": "Marzo",
+        "04": "Abril",
+        "05": "Mayo",
+        "06": "Junio",
+        "07": "Julio",
+        "08": "Agosto",
+        "09": "Septiembre",
+        "10": "Octubre",
+        "11": "Noviembre",
+        "12": "Diciembre"
+
     };
 
 
-    const eventosPorMes = eventosMes.map(evento => {
-        const numeroMes = Number(evento._id.split("-")[1]);
-        
-         return {
-            numeroMes,
-            mes: meses[numeroMes.toString().padStart(2, "0")],
-            cantidad: evento.cantidad
-        };
-    }).sort((a, b) => a.numeroMes - b.numeroMes);
+    /*
+     * ============================================================
+     * EVENTOS POR MES
+     * ============================================================
+     */
 
-    const ingresosMes = await obtenerIngresosPorMes();
+    const eventosPorMes = eventosMes
 
-    const ingresosPorMes = ingresosMes.map((item: any) => {
+        .map(evento => {
 
-        const numeroMes = Number(item._id.split("-")[1]);
+            const numeroMes = Number(
+                evento._id.split("-")[1]
+            );
 
-        return {
 
-            numeroMes,
+            return {
 
-            mes: meses[numeroMes.toString().padStart(2, "0")],
+                numeroMes,
 
-            ingresos: item.ingresos
+                mes:
+                    meses[
+                        numeroMes
+                            .toString()
+                            .padStart(2, "0")
+                    ],
 
-        };
+                cantidad: evento.cantidad
 
-    });
+            };
 
-    const top = await obtenerTopEventos();
+        })
 
-    const topEventos = [];
+        .sort(
+            (a, b) => a.numeroMes - b.numeroMes
+        );
 
-    for (const evento of top) {
 
-        const datosEvento = await obtenerEventosPorId(evento._id);
+    /*
+     * ============================================================
+     * INGRESOS POR MES
+     * ============================================================
+     */
 
-        if (datosEvento) {
+    const ingresosPorMes = ingresosMes
 
-            topEventos.push({
+        .map((item: any) => {
+
+            const numeroMes = Number(
+                item._id.split("-")[1]
+            );
+
+
+            return {
+
+                numeroMes,
+
+                mes:
+                    meses[
+                        numeroMes
+                            .toString()
+                            .padStart(2, "0")
+                    ],
+
+                ingresos: item.ingresos
+
+            };
+
+        })
+
+        .sort(
+            (a, b) => a.numeroMes - b.numeroMes
+        );
+
+
+    /*
+     * ============================================================
+     * TOP 5 EVENTOS
+     * ============================================================
+     *
+     * Antes se hacía:
+     *
+     * for (...)
+     *     await obtenerEventosPorId(...)
+     *
+     * Eso ejecutaba las consultas una por una.
+     *
+     * Ahora todas las consultas de eventos se ejecutan
+     * simultáneamente.
+     */
+
+    const topEventos = await Promise.all(
+
+        top.map(async (evento) => {
+
+            const datosEvento =
+                await obtenerEventosPorId(evento._id);
+
+
+            if (!datosEvento) {
+
+                return null;
+
+            }
+
+
+            return {
 
                 nombre: datosEvento.nombre,
 
-                ticketsVendidos: evento.ticketsVendidos,
+                ticketsVendidos:
+                    evento.ticketsVendidos,
 
-                ingresos: evento.ingresos
+                ingresos:
+                    evento.ingresos
 
-            });
+            };
 
-        }
+        })
 
-    }
+    );
 
-    const compras = await obtenerUltimasCompras();
 
-    const ultimasCompras = [];
+    /*
+     * Eliminamos los resultados null por si algún evento
+     * fue eliminado de MongoDB.
+     */
 
-    for (const compra of compras) {
+    const topEventosFinal = topEventos.filter(
+        evento => evento !== null
+    );
 
-        const usuario = await buscarUsuarioPorId(compra.usuarioId);
 
-        const evento = await obtenerEventosPorId(compra.eventoId);
+    /*
+     * ============================================================
+     * ÚLTIMAS COMPRAS
+     * ============================================================
+     *
+     * Aquí también evitamos consultas secuenciales.
+     *
+     * Cada compra necesita:
+     *
+     * 1. Usuario
+     * 2. Evento
+     *
+     * Ambas consultas son independientes, por lo que también
+     * utilizamos Promise.all().
+     */
 
-        ultimasCompras.push({
+    const ultimasCompras = await Promise.all(
 
-            cliente: usuario
-                ? `${usuario.nombre} ${usuario.apellido}`
-                : "Usuario",
+        compras.map(async (compra) => {
 
-            evento: evento
-                ? evento.nombre
-                : "Evento",
+            const [
 
-            cantidad: compra.cantidad,
+                usuario,
 
-            total: compra.precioTotal,
+                evento
 
-            fecha: compra.fechaCompra
+            ] = await Promise.all([
 
-        });
+                buscarUsuarioPorId(
+                    compra.usuarioId
+                ),
 
-    }
+                obtenerEventosPorId(
+                    compra.eventoId
+                )
 
-    const proximosEventos = await obtenerProximosEventos();
+            ]);
+
+
+            return {
+
+                cliente: usuario
+
+                    ? `${usuario.nombre} ${usuario.apellido ?? ""}`.trim()
+
+                    : "Usuario",
+
+                evento: evento
+
+                    ? evento.nombre
+
+                    : "Evento",
+
+                cantidad:
+                    compra.cantidad,
+
+                total:
+                    compra.precioTotal,
+
+                fecha:
+                    compra.fechaCompra
+
+            };
+
+        })
+
+    );
+
+
+    /*
+     * ============================================================
+     * OBJETO FINAL DEL DASHBOARD
+     * ============================================================
+     */
 
     const dashboard = {
+
         Usuarios: totalUsuarios,
+
         Eventos: totalEventos,
+
         Tickets: totalTickets,
+
         Ingresos: totalIngresos,
+
         mejorCliente,
+
         mejorEvento,
+
         eventosPorMes,
-        ingresosMes,
-        topEventos,
+
+        ingresosPorMes,
+
+        topEventos: topEventosFinal,
+
         ultimasCompras,
+
         proximosEventos
+
     };
 
+
+    /*
+     * ============================================================
+     * RESPUESTA
+     * ============================================================
+     */
+
     return {
-        success:true,
+
+        success: true,
+
         dashboard
-    };    
+
+    };
+
 }

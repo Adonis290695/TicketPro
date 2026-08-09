@@ -5,18 +5,26 @@ import EventDetail from "../pages/events/EventDetail.vue";
 import Login from "../pages/auth/Login.vue";
 import Register from "../pages/auth/Register.vue";
 import Checkout from "../pages/tickets/Checkout.vue";
+import MyTickets from "../pages/user/MyTickets.vue";
+
+import Dashboard from "../pages/admin/Dashboard.vue";
+import ManageEvents from "../pages/admin/ManageEvents.vue";
+import CreateEvent from "../pages/admin/CreateEvent.vue";
+import EditEvent from "../pages/admin/EditEvent.vue";
+import Statistics from "../pages/admin/Statistics.vue";
+import Users from "../pages/admin/Users.vue";
 
 import { useAuthStore } from "../stores/authStores";
-import Dashboard from "../pages/admin/Dashboard.vue";
-import CreateEvent from "../pages/admin/CreateEvent.vue";
-import ManageEvents from "../pages/admin/ManageEvents.vue";
-import MyTickets from "../pages/user/MyTickets.vue";
 
 const router = createRouter({
 
     history: createWebHistory(),
 
     routes: [
+
+        // ============================
+        // CLIENTE
+        // ============================
 
         {
             path: "/",
@@ -43,7 +51,11 @@ const router = createRouter({
                 requiresAuth: true
             }
         },
-        
+
+        // ============================
+        // ADMINISTRADOR
+        // ============================
+
         {
             path: "/admin/dashboard",
             component: Dashboard,
@@ -52,7 +64,7 @@ const router = createRouter({
                 requiresAdmin: true
             }
         },
-        
+
         {
             path: "/admin/events",
             component: ManageEvents,
@@ -61,7 +73,7 @@ const router = createRouter({
                 requiresAdmin: true
             }
         },
-        
+
         {
             path: "/admin/create-event",
             component: CreateEvent,
@@ -70,6 +82,37 @@ const router = createRouter({
                 requiresAdmin: true
             }
         },
+
+        {
+            path: "/admin/edit-event/:id",
+            component: EditEvent,
+            meta: {
+                requiresAuth: true,
+                requiresAdmin: true
+            }
+        },
+
+        {
+            path: "/admin/statistics",
+            component: Statistics,
+            meta: {
+                requiresAuth: true,
+                requiresAdmin: true
+            }
+        },
+
+        {
+            path: "/admin/users",
+            component: Users,
+            meta: {
+                requiresAuth: true,
+                requiresAdmin: true
+            }
+        },
+
+        // ============================
+        // AUTENTICACIÓN
+        // ============================
 
         {
             path: "/login",

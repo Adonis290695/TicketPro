@@ -97,7 +97,7 @@ export async function obtenerTicketsPorUsuario(usuarioId:string) {
 
             hora: ticket.evento?.hora,
 
-            lugar: ticket.evento?.lugar,
+            ubicacion: ticket.evento?.ubicacion,
 
             precio: ticket.evento?.precio
 

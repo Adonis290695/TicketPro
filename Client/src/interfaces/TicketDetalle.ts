@@ -20,7 +20,7 @@ export interface TicketDetalle{
 
         hora:string;
 
-        lugar:string;
+        ubicacion:string;
 
         precio:number;
 
